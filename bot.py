@@ -1,0 +1,51 @@
+from telegram import Update
+from telegram.ext import (
+    CommandHandler, 
+    Application,
+    MessageHandler,
+    filters,
+)
+from config import TOKEN
+
+async def unknown_command(update, context):
+    await update.message.reply_text('Данную команду пока наш бот не знает(')
+
+async def menu_command(update, context):
+    with open("menu.jpg", "rb") as photo:
+        await update.message.reply_photo(
+            photo=photo,
+            caption="Вот наше меню" 
+        )
+
+async def start(update, context):
+    await update.message.reply_text(
+        'Привет, Никита! Добро пожаловать в ресторан.'
+    )
+
+async def handle_text(update, context):
+    text = update.message.text.strip().lower()
+    if text == "привет":
+        await update.message.reply_text("Привет, гость!")
+    elif text == "меню":
+        await update.message.reply_text("Сегодня в меню: паста, стейк и пицца")
+    else:
+        await update.message.reply_text("Я пока не понимаю это сообщение. Напиши 'меню'")
+
+application_builder = Application.builder()
+
+start_handler = CommandHandler("start", start)
+menu_handler = CommandHandler("menu", menu_command)
+unknown_handler = MessageHandler(filters.COMMAND, unknown_command)
+text_handler = MessageHandler(
+    filters.TEXT & ~filters.COMMAND,
+    handle_text
+)
+
+application = application_builder.token(TOKEN).build()
+
+application.add_handler(start_handler)
+application.add_handler(menu_handler)
+application.add_handler(text_handler)
+application.add_handler(unknown_handler)
+
+application.run_polling()
