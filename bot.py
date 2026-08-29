@@ -19,7 +19,8 @@ async def menu_command(update, context):
 
 async def start(update, context):
     keyboard = [
-        ["🍽 Меню"]
+        ["🍽 Меню"],
+        ["📍 Адрес", "📞 Контакты"]
     ]
     menu_keyboard = ReplyKeyboardMarkup(
         keyboard,
@@ -34,8 +35,12 @@ async def handle_text(update, context):
     text = update.message.text.strip().lower()
     if text == "привет":
         await update.message.reply_text("Привет, гость!")
-    elif text == "меню" or text == "🍽 меню":
+    elif text in ("меню", "🍽 меню"):
         await menu_command(update, context)
+    elif text in ("адрес", "📍 адрес"):
+        await update.message.reply_text("Данные ресторана пока еще уточняются")
+    elif text in ("контакты", "📞 контакты"):
+        await update.message.reply_text("Данные ресторана пока еще уточняются")
     else:
         await update.message.reply_text("Я пока не понимаю это сообщение. Напиши 'меню'")
 
