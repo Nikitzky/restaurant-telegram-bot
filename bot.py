@@ -30,7 +30,10 @@ async def start(update, context):
         'Привет, Никита! Добро пожаловать в ресторан.',
         reply_markup=menu_keyboard
     )
-
+async def help_command(update, context):
+    await update.message.reply_text(
+        "Доступные команды:\n/start — открыть главное меню\n/menu — посмотреть меню\n/help — получить помощь"
+    )
 async def handle_text(update, context):
     text = update.message.text.strip().lower()
     if text == "привет":
@@ -46,8 +49,10 @@ async def handle_text(update, context):
 
 application_builder = Application.builder()
 
+
 start_handler = CommandHandler("start", start)
 menu_handler = CommandHandler("menu", menu_command)
+help_handler = CommandHandler("help", help_command)
 unknown_handler = MessageHandler(filters.COMMAND, unknown_command)
 text_handler = MessageHandler(
     filters.TEXT & ~filters.COMMAND,
@@ -58,6 +63,7 @@ application = application_builder.token(TOKEN).build()
 
 application.add_handler(start_handler)
 application.add_handler(menu_handler)
+application.add_handler(help_handler)
 application.add_handler(text_handler)
 application.add_handler(unknown_handler)
 
