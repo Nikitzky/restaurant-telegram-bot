@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
     CommandHandler, 
     Application,
@@ -18,16 +18,24 @@ async def menu_command(update, context):
         )
 
 async def start(update, context):
+    keyboard = [
+        ["🍽 Меню"]
+    ]
+    menu_keyboard = ReplyKeyboardMarkup(
+        keyboard,
+        resize_keyboard=True
+    )
     await update.message.reply_text(
-        'Привет, Никита! Добро пожаловать в ресторан.'
+        'Привет, Никита! Добро пожаловать в ресторан.',
+        reply_markup=menu_keyboard
     )
 
 async def handle_text(update, context):
     text = update.message.text.strip().lower()
     if text == "привет":
         await update.message.reply_text("Привет, гость!")
-    elif text == "меню":
-        await update.message.reply_text("Сегодня в меню: паста, стейк и пицца")
+    elif text == "меню" or text == "🍽 меню":
+        await menu_command(update, context)
     else:
         await update.message.reply_text("Я пока не понимаю это сообщение. Напиши 'меню'")
 
